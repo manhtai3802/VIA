@@ -1,13 +1,7 @@
-import FormLogin from './components/FormLogin/FormLogin';
-import RegisterForm from './components/FormRegister/RegisterForm';
+import UserPages from "./pages/UserPages/UserPages";
 
 function App() {
-  return (
-    <>
-      <FormLogin />
-      <RegisterForm />
-    </>
-  );
+  return <UserPages />;
 }
 
 export default App;
