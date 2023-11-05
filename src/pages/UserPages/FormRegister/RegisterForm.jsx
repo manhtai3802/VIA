@@ -160,7 +160,7 @@ function RegisterForm() {
   return (
     <Formik
       initialValues={{
-        userName: "tainm",
+        userName: "",
         shopName: "",
         phoneNumber: "",
         password: "",
