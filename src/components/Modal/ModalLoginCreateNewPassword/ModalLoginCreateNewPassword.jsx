@@ -12,7 +12,7 @@ import {
 import { makeStyles } from "@mui/styles";
 import { Formik } from "formik";
 import * as yup from "yup";
-import PasswordField from "../../FormControl/PasswordField";
+import PasswordField from "../../PasswordField/PasswordField";
 
 const useStyles = makeStyles(() => ({
   form: {

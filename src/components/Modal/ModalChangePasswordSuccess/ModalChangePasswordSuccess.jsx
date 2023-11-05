@@ -34,7 +34,6 @@ const useStyles = makeStyles(() => ({
 export default function ModalRegisterSuccess({ open, onClose }) {
   const classes = useStyles();
   React.useEffect(() => {
-    console.log("....");
     let timer1 = setTimeout(onClose, 3000);
 
     return () => {

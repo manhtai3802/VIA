@@ -7,12 +7,12 @@ import * as yup from "yup";
 import userApi from "../../../api/userApi";
 import background_login from "../../../assets/background_login.png";
 import logo from "../../../assets/logo.png";
-import PasswordField from "../../../components/FormControl/PasswordField";
-import TextField from "../../../components/FormControl/TextField/TextField";
 import ModalRegisterSuccess from "../../../components/Modal/ModalChangePasswordSuccess/ModalChangePasswordSuccess";
 import ModalLoginConfirmUserName from "../../../components/Modal/ModalLoginConfirmUserName/ModalLoginConfirmUserName";
 import ModalLoginCreateNewPassword from "../../../components/Modal/ModalLoginCreateNewPassword/ModalLoginCreateNewPassword";
 import ModalLoginOTPImport from "../../../components/Modal/ModalLoginOTPImport/ModalLoginOTPImport";
+import PasswordField from "../../../components/PasswordField/PasswordField";
+import TextField from "../../../components/TextField/TextField";
 
 const useStyles = makeStyles(() => ({
   backgroundLogin: {

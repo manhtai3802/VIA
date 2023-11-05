@@ -13,7 +13,7 @@ import {
 import { makeStyles } from "@mui/styles";
 import { Formik } from "formik";
 import * as yup from "yup";
-import TextField from "../../FormControl/TextField/TextField";
+import TextField from "../../TextField/TextField";
 
 const useStyles = makeStyles(() => ({
   root: {

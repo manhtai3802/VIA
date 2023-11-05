@@ -11,18 +11,18 @@ import {
 import { makeStyles } from "@mui/styles";
 import { Field, Formik } from "formik";
 import * as yup from "yup";
-import PasswordField from "../../../components/FormControl/PasswordField";
 import group_express from "../../../assets/group_express.png";
 import group_fast from "../../../assets/group_fast.png";
 import group_fresh from "../../../assets/group_fresh.png";
 import group_international from "../../../assets/group_international.png";
 import group_super from "../../../assets/group_super.png";
 import userApi from "../../../api/userApi";
-import SelectField from "../../../components/FormControl/SelectField/SelectField";
 import ModalRegisterSuccess from "../../../components/Modal/ModalRegisterSuccess/ModalRegisterSuccess";
 import { useState } from "react";
 import ModalRegisterFailed from "../../../components/Modal/ModalRegisterFailed/ModalRegisterFailed";
-import TextField from "../../../components/FormControl/TextField/TextField";
+import TextField from "../../../components/TextField/TextField";
+import PasswordField from "../../../components/PasswordField/PasswordField";
+import SelectField from "../../../components/SelectField/SelectField";
 
 const dataProvince = [
   { name: "Thanh Hóa", value: "TH" },
