@@ -6,9 +6,12 @@ import { useState } from "react";
 import * as yup from "yup";
 import userApi from "../../../api/userApi";
 import background_login from "../../../assets/background_login.png";
-import TextField from "../../../components/FormControl/TextField/TextField";
-import ModalLoginConfirmUserName from "../../../components/Modal/ModalLoginConfirmUserName/ModalLoginConfirmUserName";
+import logo from "../../../assets/logo.png";
 import PasswordField from "../../../components/FormControl/PasswordField";
+import TextField from "../../../components/FormControl/TextField/TextField";
+import ModalRegisterSuccess from "../../../components/Modal/ModalChangePasswordSuccess/ModalChangePasswordSuccess";
+import ModalLoginConfirmUserName from "../../../components/Modal/ModalLoginConfirmUserName/ModalLoginConfirmUserName";
+import ModalLoginCreateNewPassword from "../../../components/Modal/ModalLoginCreateNewPassword/ModalLoginCreateNewPassword";
 import ModalLoginOTPImport from "../../../components/Modal/ModalLoginOTPImport/ModalLoginOTPImport";
 
 const useStyles = makeStyles(() => ({
@@ -16,34 +19,46 @@ const useStyles = makeStyles(() => ({
     backgroundImage: `url(${background_login})`,
     backgroundRepeat: "no-repeat",
     backgroundSize: "cover",
-    height: "55vh",
     backgroundAttachment: "unset",
-    margin: "3px auto 0",
     backgroundPosition: "0px 0px",
+    position: "relative",
+
+    width: "100%",
+    height: "55vh",
   },
 
-  textHeader: {
+  logo: {
+    backgroundImage: `url(${logo})`,
+    backgroundRepeat: "no-repeat",
+    width: "100%",
+    height: "110px",
+  },
+
+  form: {
     position: "absolute",
-    top: "30px",
-    right: "550px",
-    color: "#ffff",
+    right: "2%",
+    top: "15%",
   },
 
   textBottom: {
-    top: "180px",
-    left: "1360px",
+    width: "100%",
+    display: "flex",
+    justifyContent: "end",
+    margin: "15px 0 0 0",
   },
 
   formLogin: {
-    position: "absolute",
-    top: "60px",
-    right: "10px",
-    backgroundColor: "#ffff",
-    borderRadius: 4,
+    width: "100%",
   },
 
   input: {
-    margin: 20,
+    padding: 15,
+    borderRadius: 4,
+
+    width: "fit-content",
+
+    backgroundColor: "#ffff",
+
     display: "flex",
   },
 
@@ -56,19 +71,21 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-// const phoneNumberVN = /(03|05|07|08|09|01[2|6|8|9])+([0-9]{8})\b/;
+// const phoneEmail =
+//   /^((03|05|07|08|09|01[2|6|8|9])+([0-9]{8})\b)|([A-Za-z0-9._%\+\-]+@[a-z0-9.\-]+\.[a-z]{2,3})$/;
 const schema = yup.object().shape({
-  userName: yup.string().when("isEmail", {
-    is: "1",
-    then: yup.string().email("Please enter valid email"),
-  }),
+  // userName: yup
+  //   .string()
+  //   .matches(phoneEmail, "Vui lòng nhập đúng email hoặc số điện thoại"),
+
+  userName: yup.string().required("Vui lòng điền tên đăng nhập"),
 
   password: yup
     .string()
     .required("Vui lòng nhập mật khẩu")
     .matches(
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{9,})/,
-      "Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and one special case Character"
+      "Vui lòng nhập mật khẩu"
     ),
 });
 
@@ -77,13 +94,19 @@ function FormLogin() {
 
   const [openOTPImport, setOpenOTPImport] = useState(false);
   const [openConfirmUserName, setOpenConfirmUserName] = useState(false);
+  const [openChangePassword, setOpenChangePassword] = useState(false);
+  const [openChangePasswordSuccess, setOpenChangePasswordSuccess] =
+    useState(false);
+  const [confirmOTP, setConfirmOTP] = useState(true);
+  const [OTPCode, SetOTPCode] = useState();
   const [userNameConfirm, setUserNameConfirm] = useState("");
 
   const onSubmit = async (values) => {
     try {
       const response = await userApi.login(values);
 
-      console.log(response);
+      if (response.data.success) return window.alert("Đăng nhập thành công!");
+      window.alert("Đăng nhập thất bại, kiểm tra lại thông tin");
     } catch (error) {
       console.log("error", error);
     }
@@ -111,6 +134,11 @@ function FormLogin() {
     setOpenOTPImport(!openOTPImport);
   };
 
+  const handleClickBackConfirmUserName = () => {
+    setOpenOTPImport(false);
+    setOpenConfirmUserName(true);
+  };
+
   const handleSubmitOTPImport = async (values) => {
     let otp = values.otp.map((item) => item.digit).join("");
 
@@ -120,11 +148,43 @@ function FormLogin() {
         otp
       );
 
-      console.log(response);
+      if (response.data.content) {
+        setConfirmOTP(true);
+        setOpenOTPImport(false);
+        setOpenChangePassword(true);
+        SetOTPCode(otp);
+      } else {
+        setConfirmOTP(false);
+      }
     } catch (error) {
       console.log("error", error);
     }
   };
+
+  const handleSubmitChangePassword = async (values) => {
+    values.otpCode = OTPCode;
+    values.userName = userNameConfirm;
+    try {
+      const response = await userApi.changePassword(values);
+
+      if (response.data.success) {
+        setOpenChangePasswordSuccess(true);
+        setOpenChangePassword(false);
+      }
+    } catch (error) {
+      console.log("error", error);
+    }
+  };
+
+  const handleCloseChangePassword = () => {
+    setOpenChangePassword(false);
+  };
+
+  const handleCloseChangePasswordSuccess = () => {
+    console.log("...");
+    setOpenChangePasswordSuccess(false);
+  };
+
   return (
     <Formik
       initialValues={{
@@ -137,36 +197,40 @@ function FormLogin() {
       {({ handleSubmit }) => (
         <form onSubmit={handleSubmit}>
           <Box className={classes.backgroundLogin}>
-            <Typography className={classes.textHeader}>
-              ĐĂNG NHẬP NGAY!
-            </Typography>
-            <Box className={classes.formLogin}>
-              <Box
-                className={classes.input}
-                sx={{
-                  "& > :not(style)": { m: 1, width: "25ch" },
-                }}
-              >
-                <TextField label="Số điện thoại hoặc email" name="userName" />
-                <PasswordField label="Mật khẩu" name="password" />
+            <Box className={classes.logo}></Box>
+            <Box className={classes.form}>
+              <Typography style={{ color: "#fff", margin: "10px 0" }}>
+                ĐĂNG NHẬP NGAY!
+              </Typography>
+              <Box className={classes.formLogin}>
+                <Box className={classes.input}>
+                  {/* <TextField label="Số điện thoại hoặc email" name="userName" /> */}
+
+                  <TextField label="Tên đăng nhập" name="userName" />
+                  <Box style={{ margin: "0 15px" }}>
+                    <PasswordField label="Mật khẩu" name="password" />
+                  </Box>
+                  <Button
+                    className={classes.button}
+                    type="submit"
+                    style={{ backgroundColor: "#fdba4d", color: "white" }}
+                  >
+                    Đăng nhập
+                  </Button>
+                </Box>
+              </Box>
+              <Box className={classes.textBottom}>
                 <Button
-                  className={classes.button}
-                  type="submit"
-                  style={{ backgroundColor: "#fdba4d", color: "white" }}
+                  style={{ color: "white", padding: 0 }}
+                  type="button"
+                  onClick={handleClickForgetPassword}
                 >
-                  Đăng nhập
+                  Quên mật khẩu
                 </Button>
               </Box>
             </Box>
-            <Button
-              className={classes.textBottom}
-              style={{ color: "white" }}
-              type="button"
-              onClick={handleClickForgetPassword}
-            >
-              Quên mật khẩu
-            </Button>
           </Box>
+
           <ModalLoginConfirmUserName
             open={openConfirmUserName}
             onClose={handleClickForgetPassword}
@@ -176,6 +240,17 @@ function FormLogin() {
             open={openOTPImport}
             onClose={handleCloseModalOTPImport}
             onSubmit={handleSubmitOTPImport}
+            onClickBackConfirmUserName={handleClickBackConfirmUserName}
+            confirmOTP={confirmOTP}
+          />
+          <ModalLoginCreateNewPassword
+            onSubmit={handleSubmitChangePassword}
+            open={openChangePassword}
+            onClose={handleCloseChangePassword}
+          />
+          <ModalRegisterSuccess
+            open={openChangePasswordSuccess}
+            onClose={handleCloseChangePasswordSuccess}
           />
         </form>
       )}

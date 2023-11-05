@@ -6,32 +6,28 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
-  DialogContentText,
   DialogTitle,
   IconButton,
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { Formik } from "formik";
 import * as yup from "yup";
-import TextField from "../../FormControl/TextField/TextField";
+import PasswordField from "../../FormControl/PasswordField";
 
 const useStyles = makeStyles(() => ({
-  root: {
-    margin: "40px",
+  form: {
+    margin: "40px ",
   },
 
   title: {
     position: "absolute !important",
-    bottom: "80%",
+    bottom: "85%",
     left: "0%",
   },
 
-  text: {
-    textAlign: "center",
-  },
-
   input: {
-    padding: "25px 0 !important",
+    padding: "20px 0 !important",
+    width: "450px",
   },
 
   btnClose: {
@@ -49,35 +45,56 @@ const useStyles = makeStyles(() => ({
     marginTop: "20px",
   },
 }));
-// const phoneEmail =
-//   /^((03|05|07|08|09|01[2|6|8|9])+([0-9]{8})\b)|([A-Za-z0-9._%\+\-]+@[a-z0-9.\-]+\.[a-z]{2,3})$/;
+
 const schema = yup.object().shape({
-  // userName: yup
-  //   .string()
-  //   .matches(phoneEmail, "Vui lòng nhập đúng email hoặc số điện thoại"),
-  userName: yup.string().required("Vui lòng nhập tên tài khoản"),
+  userName: yup.string(),
+  otpCode: yup.string(),
+  password: yup
+    .string()
+    .required("Vui lòng nhập mật khẩu")
+    .matches(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{9,})/,
+      "Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and one special case Character"
+    ),
+  confirmPassword: yup
+    .string()
+    .required("Vui lòng nhập lại mật khẩu")
+    .oneOf([yup.ref("password")], "Mật khẩu không trùng khớp"),
 });
 
-export default function ModalLoginConfirmUserName({ onClose, open, onSubmit }) {
+export default function ModalLoginCreateNewPassword({
+  onClose,
+  open,
+  onSubmit,
+}) {
   const classes = useStyles();
 
   return (
     <Formik
       initialValues={{
         userName: "",
+        otpCode: "",
+        password: "",
+        confirmPassword: "",
       }}
       validationSchema={schema}
       onSubmit={onSubmit}
     >
       {({ handleSubmit }) => (
         <Dialog open={open} onClose={onClose} disableEscapeKeyDown>
-          <form onSubmit={handleSubmit} className={classes.root}>
+          <form onSubmit={handleSubmit} className={classes.form}>
             <DialogTitle className={classes.title}>
-              YÊU CẦU THAY ĐỔI BẢO MẬT
+              THIẾT LẬP MẬT KHẨU MỚI
             </DialogTitle>
 
             <DialogContent className={classes.input}>
-              <TextField label="Tên đăng nhập" name="userName" />
+              <PasswordField label="Mật khẩu mới" name="password" />
+            </DialogContent>
+            <DialogContent className={classes.input}>
+              <PasswordField
+                label="Xác nhận mật khẩu mới"
+                name="confirmPassword"
+              />
             </DialogContent>
 
             <DialogActions className={classes.btnClose}>
@@ -86,13 +103,9 @@ export default function ModalLoginConfirmUserName({ onClose, open, onSubmit }) {
               </IconButton>
             </DialogActions>
 
-            <DialogContentText className={classes.text}>
-              Bạn vui lòng kiểm tra hòm thư đến hoặc tin nhắn trên điện thoại để
-              lấy mã OTP
-            </DialogContentText>
             <DialogActions className={classes.btn}>
               <Button style={{ color: "white" }} type="submit">
-                Gửi yêu cầu
+                Đăng nhập
               </Button>
             </DialogActions>
           </form>

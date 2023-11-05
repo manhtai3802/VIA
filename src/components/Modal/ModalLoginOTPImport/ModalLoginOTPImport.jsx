@@ -3,14 +3,15 @@
 import { Close } from "@mui/icons-material";
 import {
   Box,
+  Button,
   Dialog,
   DialogActions,
   DialogTitle,
   IconButton,
-  Typography,
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { useFormik } from "formik";
+import CountDown from "../../../hooks/CountDown";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -49,8 +50,8 @@ const useStyles = makeStyles(() => ({
   otpInput: {
     fontSize: "2.25rem",
     textAlign: "center",
-    height: "60px",
-    width: "60px",
+    height: "50px",
+    width: "50px",
   },
 
   description: {
@@ -59,6 +60,31 @@ const useStyles = makeStyles(() => ({
     display: "flex",
     justifyContent: "center",
     textAlign: "center",
+    fontWeight: "500 !important",
+  },
+
+  textCountDown: {
+    color: "#fdba4d",
+    textAlign: "center",
+  },
+
+  btn: {
+    display: "flex !important",
+    justifyContent: "space-between !important",
+    width: "70%",
+    marginTop: "20px",
+  },
+
+  btnGreen: {
+    backgroundColor: "#fdba4d !important",
+    color: "white !important",
+    width: "100%",
+  },
+
+  btnGrey: {
+    backgroundColor: "#b6c1bc !important",
+    width: "100%",
+    color: "white !important",
   },
 }));
 
@@ -73,7 +99,13 @@ const initialValues = {
   ],
 };
 
-export default function ModalLoginOTPImport({ open, onClose, onSubmit }) {
+export default function ModalLoginOTPImport({
+  open,
+  onClose,
+  onSubmit,
+  onClickBackConfirmUserName,
+  confirmOTP,
+}) {
   const classes = useStyles();
   const formik = useFormik({
     initialValues,
@@ -115,7 +147,15 @@ export default function ModalLoginOTPImport({ open, onClose, onSubmit }) {
           MÃ OTP ĐÃ ĐƯỢC GỬI TỚI SỐ ĐIỆN THOẠI/EMAIL
         </DialogTitle>
 
-        <Typography className="">Thời gian đếm ngược 3 phút</Typography>
+        <h4 className={classes.textCountDown}>
+          {confirmOTP ? (
+            <CountDown initialMinute={3} initialSeconds={0} />
+          ) : (
+            <div>
+              Mã khôi phục không đúng <Button>Gửi lại mã</Button>
+            </div>
+          )}
+        </h4>
         <DialogActions className={classes.btnClose}>
           <IconButton onClick={onClose}>
             <Close />
@@ -142,9 +182,18 @@ export default function ModalLoginOTPImport({ open, onClose, onSubmit }) {
               );
             })}
           </div>
-          <button type="submit" className="submit-btn">
-            Submit
-          </button>
+          <DialogActions className={classes.btn}>
+            <Button
+              type="button"
+              className={classes.btnGrey}
+              onClick={onClickBackConfirmUserName}
+            >
+              &lt; Trở về
+            </Button>
+            <Button type="submit" className={classes.btnGreen}>
+              Thay đổi mật khẩu
+            </Button>
+          </DialogActions>
         </form>
       </Box>
     </Dialog>

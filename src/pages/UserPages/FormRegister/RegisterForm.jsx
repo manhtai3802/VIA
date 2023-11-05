@@ -12,7 +12,11 @@ import { makeStyles } from "@mui/styles";
 import { Field, Formik } from "formik";
 import * as yup from "yup";
 import PasswordField from "../../../components/FormControl/PasswordField";
-import group from "../../../assets/Group.png";
+import group_express from "../../../assets/group_express.png";
+import group_fast from "../../../assets/group_fast.png";
+import group_fresh from "../../../assets/group_fresh.png";
+import group_international from "../../../assets/group_international.png";
+import group_super from "../../../assets/group_super.png";
 import userApi from "../../../api/userApi";
 import SelectField from "../../../components/FormControl/SelectField/SelectField";
 import ModalRegisterSuccess from "../../../components/Modal/ModalRegisterSuccess/ModalRegisterSuccess";
@@ -70,15 +74,28 @@ const useStyles = makeStyles(() => ({
     paddingLeft: "175px",
   },
 
-  group: {
+  icon: {
     backgroundRepeat: "no-repeat",
     width: "120px",
     height: "90px",
     position: "relative",
+    margin: "15px",
+    padding: "10px",
 
     "& > img": {
-      width: "35px",
-      height: "40px",
+      width: "100%",
+      height: "100%",
+      padding: 10,
+      position: "absolute",
+      top: "50%",
+      left: "50%",
+      transform: "translate(-50%, -50%)",
+    },
+
+    "& > .iconEnd": {
+      width: "100%",
+      height: "100%",
+      padding: 10,
       position: "absolute",
       top: "50%",
       left: "50%",
@@ -88,7 +105,7 @@ const useStyles = makeStyles(() => ({
 }));
 const phoneNumberVN = /(03|05|07|08|09|01[2|6|8|9])+([0-9]{8})\b/;
 const schema = yup.object().shape({
-  userName: yup.string(),
+  userName: yup.string().required("Vui lòng nhập tên tài khoản"),
   shopName: yup.string().required("Vui lòng nhập tên cửa hàng"),
   phoneNumber: yup
     .string()
@@ -119,7 +136,6 @@ function RegisterForm() {
   const classes = useStyles();
 
   const onSubmit = async (values) => {
-    values.userName = values.shopName;
     try {
       const response = await userApi.register(values);
 
@@ -135,6 +151,10 @@ function RegisterForm() {
   };
   const handleCloseSuccess = () => {
     setOpenSuccess(false);
+  };
+
+  const alertText = () => {
+    window.alert("Chính sách đang được cập nhật");
   };
 
   return (
@@ -165,13 +185,16 @@ function RegisterForm() {
                     ĐĂNG KÝ TÀI KHOẢN
                   </Typography>
                   <Grid container spacing={2}>
-                    <Grid item xs={4}>
+                    <Grid item xs={6}>
+                      <TextField label="Tên tài khoản" name="userName" />
+                    </Grid>
+                    <Grid item xs={6}>
                       <TextField label="Tên cửa hàng" name="shopName" />
                     </Grid>
-                    <Grid item xs={4}>
+                    <Grid item xs={6}>
                       <TextField label="Số điện thoại" name="phoneNumber" />
                     </Grid>
-                    <Grid item xs={4}>
+                    <Grid item xs={6}>
                       <TextField label="Email" name="email" />
                     </Grid>
                     <Grid item xs={6}>
@@ -213,7 +236,17 @@ function RegisterForm() {
                         name="acceptTerm"
                         as={FormControlLabel}
                         control={<Checkbox />}
-                        label="Tôi đã đọc và đồng ý với Chính sách bảo mật thông tin"
+                        label={
+                          <div>
+                            Tôi đã đọc và đồng ý với{" "}
+                            <Button
+                              style={{ color: "#fdba4d" }}
+                              onClick={alertText}
+                            >
+                              Chính sách bảo mật thông tin
+                            </Button>
+                          </div>
+                        }
                       />
                     </Grid>
                     <Grid item xs={4}>
@@ -234,34 +267,31 @@ function RegisterForm() {
                     </Typography>
                     <Grid container className={classes.groupIcon}>
                       <Grid item xs={6}>
-                        <Box className={classes.group}>
-                          <img src={group} />
+                        <Box className={classes.icon}>
+                          <img src={group_express} />
                         </Box>
-                        <Typography>VIA EXPRESS</Typography>
                       </Grid>
                       <Grid item xs={6}>
-                        <Box className={classes.group}>
-                          <img src={group} />
+                        <Box className={classes.icon}>
+                          <img src={group_fast} />
                         </Box>
-                        <Typography>VIA EXPRESS</Typography>
                       </Grid>
                       <Grid item xs={6}>
-                        <Box className={classes.group}>
-                          <img src={group} />
+                        <Box className={classes.icon}>
+                          <img src={group_super} />
                         </Box>
-                        <Typography>VIA EXPRESS</Typography>
                       </Grid>
                       <Grid item xs={6}>
-                        <Box className={classes.group}>
-                          <img src={group} />
+                        <Box className={classes.icon}>
+                          <img src={group_fresh} />
                         </Box>
-                        <Typography>VIA EXPRESS</Typography>
                       </Grid>
                       <Grid item xs={12}>
-                        <Box className={classes.group}>
-                          <img src={group} />
-                        </Box>
-                        <Typography>VIA EXPRESS</Typography>
+                        <img
+                          src={group_international}
+                          className="iconEnd"
+                          style={{ margin: " 0 30px" }}
+                        />
                       </Grid>
                     </Grid>
                   </Box>
